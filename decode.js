@@ -1,57 +1,60 @@
-let endOfThatElement;
+const startOfString = "0123456789";
 
 function decodeInteger(data) {
-  endOfThatElement = data.indexOf("e");
-  const decodedData = parseInt(data.slice(1, endOfThatElement));
+  let endOfThatElement = data.indexOf("e");
+  const decodedPart = parseInt(data.slice(1, endOfThatElement));
   endOfThatElement = endOfThatElement + 1;
-  return decodedData;
+  return [decodedPart, endOfThatElement];
 }
 
 function decodeString(data) {
   const colonIndex = data.indexOf(":");
   const length = parseInt(data.slice(0, colonIndex));
   const start = colonIndex + 1;
-  endOfThatElement = start + length;
-  const decodedData = data.slice(start, endOfThatElement);
-  return decodedData;
+  
+  const end = start + length;
+  const decodedPart = data.slice(start, end);
+  return [decodedPart, end]
 }
 
 function decodeList(data) {
   const decodedData = [];
-  let remainingData = data.slice(1);
-  while (remainingData.length > 1) {
-    const decodedPart = decode(remainingData);
-    decodedData.push(decodedPart);
-    remainingData = remainingData.slice(endOfThatElement);
-    console.log(remainingData);
-    if(remainingData[0] === 'e') {
-        break;
-    }
+  let index = 1;
+  console.log(data)
+  
+while(index < data.length) {
+  if(data[index] === 'e') {
+    index++;
   }
-return decodedData;
+
+  const decodedPartAndEnd = decode(data.slice(index));
+  decodedData.push(decodedPartAndEnd[0])
+  index += decodedPartAndEnd[1];
 }
 
+  return [decodedData, index]
+}
+
+
 function decode(data) {
-  let remainingData = data;
-  let decodedData;
-  if (remainingData[0] === "i") {
-    decodedData =  decodeInteger(data);
-    return decodedData;
-  } else if (remainingData[0] === "l") {
-    decodedData = decodeList(data);
-    return decodedData;
-  } else {
-    decodedData = decodeString(data);
-    return decodedData;
+  if (data[0] === "i") {
+    return decodeInteger(data);
   }
+  if(data[0] === 'l') {
+    return decodeList(data);
+  }
+  if(startOfString.includes(data[0])) {
+    return decodeString(data);
+  }
+  return ["", 1]
+}
+
+function decodeCipher(data) {
+  return decode(data)[0];
 }
 
 function main() {
-//   console.log(decode("i-42e"));
-//   console.log(decode("5:hello"));
-//   console.log(decode("li3e"));
-  console.log(decode("l5:applei123el6:bananai-5eee"));
-//   console.log(decode("l5:hello6:bababai2ee"))
+  console.log(decodeCipher("li34e5:hellol6:bananae"))
 }
 
 main();
