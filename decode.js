@@ -20,15 +20,15 @@ function decodeString(data) {
 function decodeList(data) {
   const decodedData = [];
   let index = 1;
-  console.log(data)
   
 while(index < data.length) {
   if(data[index] === 'e') {
     index++;
+    continue;
   }
 
   const decodedPartAndEnd = decode(data.slice(index));
-  decodedData.push(decodedPartAndEnd[0])
+  decodedData.push(decodedPartAndEnd[0]);
   index += decodedPartAndEnd[1];
 }
 
@@ -43,10 +43,7 @@ function decode(data) {
   if(data[0] === 'l') {
     return decodeList(data);
   }
-  if(startOfString.includes(data[0])) {
-    return decodeString(data);
-  }
-  return ["", 1]
+   return decodeString(data);
 }
 
 function decodeCipher(data) {
@@ -54,7 +51,10 @@ function decodeCipher(data) {
 }
 
 function main() {
-  console.log(decodeCipher("li34e5:hellol6:bananae"))
+  // console.log(decodeCipher("li34e5:hellol6:bananae"));
+  console.log(decodeCipher(decode("lllli32eei43eeee")))
+  // console.log(decodeCipher("lli32eei32ee"))
+  // console.log(decodeCipher("li32ee"))
 }
 
 main();
